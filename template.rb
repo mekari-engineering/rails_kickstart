@@ -54,7 +54,6 @@ def add_gems
   end
 
   gem 'lograge'
-
 end
 
 def set_application_name
@@ -147,6 +146,17 @@ def add_app_helpers_to_administrate
   end
 end
 
+def install_rspec
+  generate "rspec:install"
+end
+
+def install_shoulda_matcher
+  gsub_file "spec/rails_helper.rb",
+      /# config.filter_gems_from_backtrace.+/,
+      "config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)"
+end
+
 # def add_multiple_authentication
 #     insert_into_file "config/routes.rb",
 #     ', controllers: { omniauth_callbacks: "users/omniauth_callbacks" }',
@@ -182,6 +192,8 @@ after_bundle do
   add_users
   add_sidekiq
   add_foreman
+  install_rspec
+  install_shoulda_matcher
 
   copy_templates
 
